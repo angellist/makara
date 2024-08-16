@@ -212,7 +212,6 @@ module ActiveRecord
           @proxy = proxy
           @owner = nil
           @pool = nil
-          @schema_cache = ActiveRecord::ConnectionAdapters::SchemaCache.new @proxy
           @idle_since = Concurrent.monotonic_time
           @adapter = ActiveRecord::ConnectionAdapters::AbstractAdapter.new(@proxy)
         end
@@ -271,7 +270,7 @@ module ActiveRecord
           if @pool.respond_to?(:get_schema_cache) # AR6
             @pool.get_schema_cache(@proxy)
           else
-            @schema_cache
+            @schema_cache ||= BoundSchemaReflection.new(@pool.schema_reflection, self)
           end
         end
 
