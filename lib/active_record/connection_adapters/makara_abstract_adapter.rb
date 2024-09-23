@@ -205,8 +205,12 @@ module ActiveRecord
       end
 
       class ActiveRecordPoolControl
+        extend Forwardable
+
         attr_reader :owner
         alias in_use? owner
+
+        def_delegators :@proxy, :get_database_version, :data_sources, :data_source_exists?, :primary_key, :columns, :column_exists?, :indexes, :index_exists?, :tables, :table_exists?, :views, :view_exists?
 
         def initialize(proxy)
           @proxy = proxy
